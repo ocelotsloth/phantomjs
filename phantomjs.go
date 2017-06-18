@@ -45,6 +45,9 @@ type Process struct {
 	// HTTP port used to communicate with phantomjs.
 	Port int
 
+	// Extra command line arguments
+	CmdArgs []string
+
 	// Output from the process.
 	Stdout io.Writer
 	Stderr io.Writer
@@ -82,7 +85,8 @@ func (p *Process) Open() error {
 		}
 
 		// Start external process.
-		cmd := exec.Command(p.BinPath, scriptPath)
+		args := append(p.CmdArgs, scriptPath)
+		cmd := exec.Command(p.BinPath,  args...)
 		cmd.Env = []string{fmt.Sprintf("PORT=%d", p.Port)}
 		cmd.Stdout = p.Stdout
 		cmd.Stderr = p.Stderr
